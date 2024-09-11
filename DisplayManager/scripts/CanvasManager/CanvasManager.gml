@@ -66,23 +66,17 @@ function CanvasManager(__check_object = true) { static __instance = new (functio
     {
         //GM's primitives do not rasterize consistently across platforms 
         //so we are using sprite drawing for accurate debug drawing here
-        if (_outline)
-        {
-            draw_sprite_ext(SpriteDisplayManagerRectOutline, 0, _x, _y, _width/9, _height/9, 0, _color, _alpha);        
-        }
-        else
-        {
-            draw_sprite_ext(SpriteDisplayManagerRect, 0, _x, _y, _width/2, _height/2, 0, _color, _alpha);
-        }
+        if (_outline) { draw_sprite_ext(SpriteDisplayManagerRectOutline, 0, _x, _y, _width/9, _height/9, 0, _color, _alpha); }
+        else          { draw_sprite_ext(SpriteDisplayManagerRectSolid,   0, _x, _y, _width/2, _height/2, 0, _color, _alpha); }
     }
     
     __gui_to_canvas_point = function(_x, _y)
     {
         switch (__orientation)
         {
-            case display_landscape:         __point.x =  (_x - __x)/__xscale + __left; __point.y =  (_y - __y)/__yscale + __top; break;            
-            case display_landscape_flipped: __point.x = -(_x - __x)/__xscale + __left; __point.y = -(_y - __y)/__yscale + __top; break;             
-            case display_portrait:          __point.x = -(_y - __y)/__yscale + __left; __point.y =  (_x - __x)/__xscale + __top; break;                
+            case display_landscape:         __point.x =  (_x - __x)/__xscale + __left; __point.y =  (_y - __y)/__yscale + __top; break;
+            case display_landscape_flipped: __point.x = -(_x - __x)/__xscale + __left; __point.y = -(_y - __y)/__yscale + __top; break;
+            case display_portrait:          __point.x = -(_y - __y)/__yscale + __left; __point.y =  (_x - __x)/__xscale + __top; break;
             case display_portrait_flipped:  __point.x =  (_y - __y)/__yscale + __left; __point.y = -(_x - __x)/__xscale + __top; break;
             
             default: __global.__throw("Invalid orientation \"", __orientation, "\""); return undefined; break;
@@ -95,9 +89,9 @@ function CanvasManager(__check_object = true) { static __instance = new (functio
     {
         switch (__orientation)
         {
-            case display_landscape:         __point.x =  (__xscale*(_x - __left)) + __x; __point.y =  (__yscale*(_y - __top))  + __y; break;        
-            case display_landscape_flipped: __point.x = -(__xscale*(_x - __left)) + __x; __point.y = -(__yscale*(_y - __top))  + __y; break;         
-            case display_portrait:          __point.x =  (__yscale*(_y - __top))  + __x; __point.y = -(__xscale*(_x - __left)) + __y; break;            
+            case display_landscape:         __point.x =  (__xscale*(_x - __left)) + __x; __point.y =  (__yscale*(_y - __top))  + __y; break;
+            case display_landscape_flipped: __point.x = -(__xscale*(_x - __left)) + __x; __point.y = -(__yscale*(_y - __top))  + __y; break;
+            case display_portrait:          __point.x =  (__yscale*(_y - __top))  + __x; __point.y = -(__xscale*(_x - __left)) + __y; break;
             case display_portrait_flipped:  __point.x = -(__yscale*(_y - __top))  + __x; __point.y =  (__xscale*(_x - __left)) + __y; break;
             
             default: __global.__throw("Invalid orientation \"", __orientation, "\""); return undefined; break;
@@ -138,7 +132,8 @@ function CanvasManager(__check_object = true) { static __instance = new (functio
         
         //Readout
         var _orientation = "";
-        switch (__orientation) {
+        switch (__orientation)
+        {
             case display_landscape:         _orientation = "landscape         "; break;    
             case display_landscape_flipped: _orientation = "landscape flipped "; break;
             case display_portrait:          _orientation = "portrait          "; break;
@@ -269,10 +264,7 @@ function CanvasManager(__check_object = true) { static __instance = new (functio
         room_goto(room_next(room));
     }
     
-    __create = function()
-    {
-        if (instance_number(ObjectDisplayManagerCanvas) > 1) instance_destroy();
-    }
+    __create = function(){ if (instance_number(ObjectDisplayManagerCanvas) > 1) instance_destroy(); }
     
     __tick = function()
     {
@@ -282,27 +274,24 @@ function CanvasManager(__check_object = true) { static __instance = new (functio
         __min_height  = __min_height_change;    
         __max_width   = __max_width_change;
         __max_height  = __max_height_change;
+        __width       = __max_width;
+        __height      = __max_height;
         
-        //Orientation
+        var _mode = __mode;
+        var _scale = false;
         var _portrait = (__orientation == display_portrait) || (__orientation == display_portrait_flipped);
         var _orientation_window_width  = __global.__window_width;
         var _orientation_window_height = __global.__window_height;
+        var _integer_scale = max(1, min(__global.__window_width div __min_width, __global.__window_height div __min_height));
+        
         if (_portrait)
         {
             _orientation_window_width  = __global.__window_height;
             _orientation_window_height = __global.__window_width;
+            _integer_scale = max(1, min(__global.__window_width div __min_height, __global.__window_height div __min_width));
         }
 
-        //Find integer scale (nearest factor fit)
-        var _mode = __mode;
-        var _integer_scale = max(1, min(__global.__window_width div __min_width, __global.__window_height div __min_height));
-        if (_portrait) _integer_scale = max(1, min(__global.__window_width div __min_height, __global.__window_height div __min_width));
-
-        __width  = __max_width;
-        __height = __max_height; 
-        var _scale = false;
-
-        //Downscale width        
+        //Downscale width
         __left = 0;
         if (_orientation_window_width < __min_width)
         {
@@ -450,25 +439,21 @@ function CanvasManager(__check_object = true) { static __instance = new (functio
                 //Upscale
                 if (__mode == DISPLAY_MODE_FIT_SMOOTH)
                 {
-                    //Smooth
                     __sampling_type = __DISPLAY_SAMPLING_BILINEAR;
                 }
                 else if (frac(_minScale) != 0.0)
                 {
-                    //Sharp
-                    if ((_minScale < DISPLAY_SMOOTHING_THRESHOLD_MIN) || (_minScale > DISPLAY_SMOOTHING_THRESHOLD_MAX))
+                    if ((_minScale < DISPLAY_SMOOTHING_THRESHOLD_MIN) 
+                    ||  (_minScale > DISPLAY_SMOOTHING_THRESHOLD_MAX))
                     {
-                        //Don't resample
                         __sampling_type = __DISPLAY_SAMPLING_POINT;
                     }
                     else if (_minScale < __DISPLAY_SHIMMERLESS_THRESHOLD)
                     {
-                        //Sharp Shimmerless
                         __sampling_type = __DISPLAY_SAMPLING_SHIMMERLESS;
                     }
                     else
                     {
-                        //Sharp Bilinear
                         __sampling_type = __DISPLAY_SAMPLING_BILINEAR_SHARP;
                     }
                 }
@@ -483,7 +468,8 @@ function CanvasManager(__check_object = true) { static __instance = new (functio
     
     __step = function()
     {
-        if (!time_source_exists(__global.__timesource_handle) || (time_source_get_state(__global.__timesource_handle) != time_source_state_active))
+        if (!time_source_exists(__global.__timesource_handle) 
+        || (time_source_get_state(__global.__timesource_handle) != time_source_state_active)) 
         {
             __global.__throw("Time source is misconfigured. Do not destroy or pause");
         }
@@ -502,13 +488,8 @@ function CanvasManager(__check_object = true) { static __instance = new (functio
 
         switch (__sampling_type)
         {
-            case __DISPLAY_SAMPLING_POINT:
-                gpu_set_texfilter(false);
-            break;
-    
-            case __DISPLAY_SAMPLING_BILINEAR:
-                gpu_set_texfilter(true);
-            break;
+            case __DISPLAY_SAMPLING_POINT:    gpu_set_texfilter(false); break;
+            case __DISPLAY_SAMPLING_BILINEAR: gpu_set_texfilter(true);  break;
     
             case __DISPLAY_SAMPLING_BILINEAR_SHARP:
                 _shader_set = true;

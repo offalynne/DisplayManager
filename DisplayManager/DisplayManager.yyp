@@ -11,7 +11,7 @@
     {"id":{"name":"SpriteTestDisplayManagerMotion","path":"sprites/SpriteTestDisplayManagerMotion/SpriteTestDisplayManagerMotion.yy",},"order":3,},
     {"id":{"name":"CanvasManager","path":"scripts/CanvasManager/CanvasManager.yy",},"order":5,},
     {"id":{"name":"SpriteDisplayManagerRectOutline","path":"sprites/SpriteDisplayManagerRectOutline/SpriteDisplayManagerRectOutline.yy",},"order":7,},
-    {"id":{"name":"SpriteDisplayManagerRect","path":"sprites/SpriteDisplayManagerRect/SpriteDisplayManagerRect.yy",},"order":6,},
+    {"id":{"name":"SpriteDisplayManagerRectSolid","path":"sprites/SpriteDisplayManagerRectSolid/SpriteDisplayManagerRectSolid.yy",},"order":6,},
     {"id":{"name":"DisplayManager","path":"scripts/DisplayManager/DisplayManager.yy",},"order":3,},
     {"id":{"name":"RoomDisplayManagerInit","path":"rooms/RoomDisplayManagerInit/RoomDisplayManagerInit.yy",},"order":0,},
     {"id":{"name":"ShaderScaleSharpBilinear","path":"shaders/ShaderScaleSharpBilinear/ShaderScaleSharpBilinear.yy",},"order":2,},
