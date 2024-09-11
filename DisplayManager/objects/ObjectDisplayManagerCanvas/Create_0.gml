@@ -1,0 +1,1 @@
+CanvasManager().__create();

@@ -1,0 +1,1 @@
+CanvasManager().__draw_gui();
