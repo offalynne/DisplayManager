@@ -1,1 +1,1 @@
-CanvasManager().__draw_gui();
+CanvasManager().__draw();

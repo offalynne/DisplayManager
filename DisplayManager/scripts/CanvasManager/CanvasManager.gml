@@ -431,37 +431,44 @@ function CanvasManager(__check_object = true) { static __instance = new (functio
 
         //Set sampling mode
         __sampling_type = __DISPLAY_SAMPLING_POINT;
-        if ((__xscale != 1.0) || (__yscale != 1.0 ))
+        
+        if ((__xscale == 1.0) && (__yscale == 1.0 )) exit;
+
+        var _minScale = min(__xscale, __yscale)
+        if (_minScale >= 1.0)
         {
-            var _minScale = min(__xscale, __yscale)
-            if (_minScale >= 1.0)
+            //Upscale
+            if (__mode == DISPLAY_MODE_FIT_SMOOTH)
             {
-                //Upscale
-                if (__mode == DISPLAY_MODE_FIT_SMOOTH)
+                __sampling_type = __DISPLAY_SAMPLING_BILINEAR;
+            }
+            else if (frac(_minScale) != 0.0)
+            {
+                if ((_minScale < DISPLAY_SMOOTHING_THRESHOLD_MIN) 
+                ||  (_minScale > DISPLAY_SMOOTHING_THRESHOLD_MAX))
                 {
-                    __sampling_type = __DISPLAY_SAMPLING_BILINEAR;
+                    __sampling_type = __DISPLAY_SAMPLING_POINT;
                 }
-                else if (frac(_minScale) != 0.0)
+                else if (_minScale < __DISPLAY_SHIMMERLESS_THRESHOLD)
                 {
-                    if ((_minScale < DISPLAY_SMOOTHING_THRESHOLD_MIN) 
-                    ||  (_minScale > DISPLAY_SMOOTHING_THRESHOLD_MAX))
-                    {
-                        __sampling_type = __DISPLAY_SAMPLING_POINT;
-                    }
-                    else if (_minScale < __DISPLAY_SHIMMERLESS_THRESHOLD)
-                    {
-                        __sampling_type = __DISPLAY_SAMPLING_SHIMMERLESS;
-                    }
-                    else
-                    {
-                        __sampling_type = __DISPLAY_SAMPLING_BILINEAR_SHARP;
-                    }
+                    __sampling_type = __DISPLAY_SAMPLING_SHIMMERLESS;
+                }
+                else
+                {
+                    __sampling_type = __DISPLAY_SAMPLING_SHARP;
                 }
             }
-            else
-            {
-                //Downscale
+        }
+        else
+        {
+            //Downscale
+            if (__mode == DISPLAY_MODE_FIT_SMOOTH)
+            {    
                 __sampling_type = __DISPLAY_SAMPLING_BICUBIC;
+            }
+            else
+            {                
+                __sampling_type = __DISPLAY_SAMPLING_BILINEAR;
             }
         }
     }
@@ -475,7 +482,7 @@ function CanvasManager(__check_object = true) { static __instance = new (functio
         }
     }
     
-    __draw_gui = function()
+    __draw = function()
     {
         var _shader_set   = false;
         var _texture      = undefined;
@@ -483,7 +490,6 @@ function CanvasManager(__check_object = true) { static __instance = new (functio
         var _blend_enable = gpu_get_blendenable();
 
         if (__fill_color != undefined) draw_clear(__fill_color);
-
         gpu_set_blendenable(false);
 
         switch (__sampling_type)
@@ -491,7 +497,7 @@ function CanvasManager(__check_object = true) { static __instance = new (functio
             case __DISPLAY_SAMPLING_POINT:    gpu_set_texfilter(false); break;
             case __DISPLAY_SAMPLING_BILINEAR: gpu_set_texfilter(true);  break;
     
-            case __DISPLAY_SAMPLING_BILINEAR_SHARP:
+            case __DISPLAY_SAMPLING_SHARP:
                 _shader_set = true;
                 gpu_set_texfilter(true);
                 _texture = surface_get_texture(application_surface);
@@ -512,7 +518,7 @@ function CanvasManager(__check_object = true) { static __instance = new (functio
             case __DISPLAY_SAMPLING_BICUBIC:
                 _shader_set = true;
                 gpu_set_texfilter(true);
-                _texture = surface_get_texture(application_surface);    
+                _texture = surface_get_texture(application_surface);
                 shader_set(ShaderScaleBicubic);
                 shader_set_uniform_f(shader_get_uniform(ShaderScaleBicubic, "u_vTexelSize"), texture_get_texel_width(_texture), texture_get_texel_height(_texture));
             break;

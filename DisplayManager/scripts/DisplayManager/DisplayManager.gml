@@ -20,11 +20,11 @@
 #macro __DISPLAY_DESKTOP  ((os_type == os_windows) || (os_type == os_macosx)  || (os_type == os_linux))
 #macro __DISPLAY_MOBILE   ((os_type == os_android) || (os_type == os_tvos)    || (os_type == os_ios))
 
-#macro __DISPLAY_SAMPLING_SHIMMERLESS     "sharp shimmerless"
-#macro __DISPLAY_SAMPLING_BILINEAR_SHARP  "sharp bilinear"
-#macro __DISPLAY_SAMPLING_BILINEAR        "bilinear"
-#macro __DISPLAY_SAMPLING_BICUBIC         "bicubic"
-#macro __DISPLAY_SAMPLING_POINT           "point"
+#macro __DISPLAY_SAMPLING_SHIMMERLESS  "shimmerless"
+#macro __DISPLAY_SAMPLING_BILINEAR     "bilinear"
+#macro __DISPLAY_SAMPLING_BICUBIC      "bicubic"
+#macro __DISPLAY_SAMPLING_SHARP        "sharp"
+#macro __DISPLAY_SAMPLING_POINT        "point"
 
 //Index identities for `window_get_visible_rects`
 enum __DISPLAY_RECT
@@ -50,10 +50,7 @@ function DisplayManager() { static __instance = new (function() constructor
 {
     #region Setup    
     
-    if ((os_browser != browser_not_a_browser) || (os_type == os_operagx))
-    {
-        __throw("Invalid platform. HTML5 and OperaGX are not supported");
-    }
+    if ((os_browser != browser_not_a_browser) || (os_type == os_operagx)) __throw("Invalid platform. HTML5 and OperaGX are not supported");
     
     __max_unsinged = power(2, 32);
     __os_titlebar_height = ((os_type == os_windows)? 30 : 0);
@@ -259,10 +256,11 @@ function DisplayManager() { static __instance = new (function() constructor
                     _width  = __window_width;
                     _height = __window_height ;
                 }
-            }            
+            }
+            
             array_push(__monitor_list, new __class_monitor(0, 0, _width, _height));
            
-           return;
+            return false;
         }
         
         //Get and validate monitor data
@@ -364,10 +362,7 @@ function DisplayManager() { static __instance = new (function() constructor
         {
             //Find titlebar state
             __titlebar_height = __os_titlebar_height
-            if (__using_showborder)
-            {
-                if (!window_get_showborder()) __titlebar_height = 0;
-            }
+            if ((__using_showborder) && !window_get_showborder()) __titlebar_height = 0;
             
             //Get window state
             __window_x      = window_get_x();
@@ -448,10 +443,10 @@ function DisplayManager() { static __instance = new (function() constructor
                 //Rebuild monitor list
                 __display_change = __monitor_list_update();
                 
-                if ((os_type == os_windows) && __fullscreen && (__monitor_active != __monitor_active_last))
+                //Handle bugged out Windows runner fullscreen monitor change behavior
+                if ((os_type == os_windows) && __fullscreen && (__monitor_active != __monitor_active_last) && (__deferred_handle == undefined)) 
                 {
-                    //Handle bugged out Windows runner fullscreen monitor change behavior
-                    if (__deferred_handle == undefined) __deferred_handle = new __class_fullscreen_change(__monitor_active);
+                    __deferred_handle = new __class_fullscreen_change(__monitor_active);
                 }
             
                 __monitor_active_last = __monitor_active;                
@@ -491,10 +486,7 @@ function DisplayManager() { static __instance = new (function() constructor
             {
                 if (!__fullscreen)
                 {
-                    if (__recently_maximized)
-                    {
-                        return "Monitor change refused, window is maximized";
-                    }
+                    if (__recently_maximized) return "Monitor change refused, window is maximized";
                 }
                 else if (__using_borderless && window_get_borderless_fullscreen())
                 {
@@ -527,11 +519,7 @@ function DisplayManager() { static __instance = new (function() constructor
     __monitor_list_update();
     __timesource_handle = time_source_create(time_source_game, time_source_units_frames, 1, __tick, [], -1);
     time_source_start(__timesource_handle);
-    
-    if (display_aa < DISPLAY_AA_LEVEL)
-    {
-        __log("Warning! Configured DISPLAY_AA_LEVEL ", DISPLAY_AA_LEVEL, " exceeds maximum available value ", display_aa);
-    }
+    if (display_aa < DISPLAY_AA_LEVEL) __log("Warning! Configured DISPLAY_AA_LEVEL ", DISPLAY_AA_LEVEL, " exceeds maximum available value ", display_aa);
     
     #endregion
     
