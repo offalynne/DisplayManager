@@ -1,4 +1,7 @@
 // feather ignore all
+#macro DISPLAY_MODE_PIXEL_PERFECT  "pixel"
+#macro DISPLAY_MODE_FIT_SHARP      "sharp"
+#macro DISPLAY_MODE_FIT_SMOOTH     "smooth"
 
 // Config (edit these!)
 #macro DISPLAY_APP_SURFACE_SIZE  2048      //Application size max
