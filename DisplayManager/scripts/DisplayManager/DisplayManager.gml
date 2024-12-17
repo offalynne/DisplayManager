@@ -362,7 +362,7 @@ function DisplayManager() { static __instance = new (function() constructor
         {
             //Find titlebar state
             __titlebar_height = __os_titlebar_height
-            if ((__using_showborder) && !window_get_showborder()) __titlebar_height = 0;
+            if (__using_showborder) if (!window_get_showborder()) __titlebar_height = 0;
             
             //Get window state
             __window_x      = window_get_x();
