@@ -3,14 +3,6 @@
 // Config (edit these!)
 #macro DISPLAY_AA_LEVEL 0  //AA level used when resetting display on Windows
 
-#region Public constants
-
-#macro DISPLAY_MODE_PIXEL_PERFECT  "pixel"
-#macro DISPLAY_MODE_FIT_SHARP      "sharp"
-#macro DISPLAY_MODE_FIT_SMOOTH     "smooth"
-
-#region
-
 #region Private constants
 
 #macro __DISPLAY_SILENT  false
