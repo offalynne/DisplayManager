@@ -25,8 +25,6 @@ enum __DISPLAY_RECT
     __LENGTH     = 8
 }
 
-#macro __DISPLAY_SHIMMERLESS_THRESHOLD  2.0
-
 #endregion
 
 #region Singleton
