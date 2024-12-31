@@ -16,7 +16,7 @@ if (instance_exists(ObjectDisplayManagerCanvas))
     if (keyboard_check_pressed(vk_tab)) display_canvas_overlay_set(!display_canvas_overlay());
     
     //Cycle scale modes
-    var _mode_list = [DISPLAY_MODE_PIXEL_PERFECT, DISPLAY_MODE_FIT_SHARP, DISPLAY_MODE_FIT_SMOOTH];
+    var _mode_list = [CANVAS_MODE_SHARP, CANVAS_MODE_CRISP, CANVAS_MODE_SMOOTH];
     var _mode_index = 0;
     repeat(array_length(_mode_list))
     {
@@ -40,12 +40,4 @@ if (instance_exists(ObjectDisplayManagerCanvas))
     if (_orientation_index < 0) _orientation_index = array_length(_orientation_list) - 1;
     if (_orientation_index >= array_length(_orientation_list)) _orientation_index = 0;
     display_canvas_orientation_set(_orientation_list[_orientation_index]);
-}
-
-if keyboard_check_pressed(vk_alt)
-{
-    show_debug_message("");
-    show_debug_message(json_stringify(display_monitor_list()))
-    show_debug_message(json_stringify(window_get_visible_rects(window_get_x(), window_get_y(), window_get_x() + window_get_width(), window_get_y() + window_get_height())));
-    show_debug_message("display: " + string(window_get_width()) + "," + string(window_get_height()))
 }

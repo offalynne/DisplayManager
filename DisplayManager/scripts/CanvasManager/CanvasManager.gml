@@ -1,26 +1,31 @@
 // feather ignore all
 
+// Config (edit these!)
+#macro CANVAS_APP_SURFACE_SIZE  2048  //Application size max
+#macro CANVAS_INITIAL_WIDTH     320   //Initial window width
+#macro CANVAS_INITIAL_HEIGHT    240   //Initial window height
+
+#macro CANVAS_SMOOTHING_THRESHOLD_MIN  -infinity //Minimum scale threshold for smoothing
+#macro CANVAS_SMOOTHING_THRESHOLD_MAX   infinity //Maximum scale threshold for smoothing
+
+#macro CANVAS_SCALE_MODE_INITIAL  CANVAS_MODE_SHARP //Initial canvas mode
+
+
+
+
+//Public constants
+#macro CANVAS_MODE_SHARP   "sharp"  //Integer scale: Pixel perfect, crop to fit
+#macro CANVAS_MODE_CRISP   "crisp"  //Bilinear or box filter: Crisp scaling, letter or pillarbox to fit
+#macro CANVAS_MODE_SMOOTH  "smooth" //Bilinear or bicubic filter: Smooth scaling, letter or pillarbox to fit
+
+//Private constants
 #macro __CANVAS_SAMPLING_SHIMMERLESS  "shimmerless"
 #macro __CANVAS_SAMPLING_BILINEAR     "bilinear"
 #macro __CANVAS_SAMPLING_BICUBIC      "bicubic"
 #macro __CANVAS_SAMPLING_SHARP        "sharp"
 #macro __CANVAS_SAMPLING_POINT        "point"
 
-#macro __CANVAS_MODE_PIXEL_PERFECT    "pixel"
-#macro __CANVAS_MODE_FIT_SHARP        "sharp"
-#macro __CANVAS_MODE_FIT_SMOOTH       "smooth"
-
 #macro __CANVAS_SHIMMERLESS_THRESHOLD  2.0
-
-// Config (edit these!)
-#macro CANVAS_APP_SURFACE_SIZE  2048  //Application size max
-#macro CANVAS_INITIAL_WIDTH     320   //Initial window width
-#macro CANVAS_INITIAL_HEIGHT    240   //Initial window height
-
-#macro CANVAS_SCALE_MODE_INITIAL  __CANVAS_MODE_PIXEL_PERFECT
-
-#macro CANVAS_SMOOTHING_THRESHOLD_MIN  -infinity
-#macro CANVAS_SMOOTHING_THRESHOLD_MAX   infinity
 
 #region Singleton
 
@@ -30,7 +35,7 @@ function CanvasManager(__check_object = true) { static __instance = new (functio
     
     __global = DisplayManager();
 
-    __mode          = __CANVAS_MODE_PIXEL_PERFECT;  
+    __mode          = CANVAS_MODE_SHARP;  
     __sampling_type = __CANVAS_SAMPLING_POINT;
     __orientation   = display_landscape;
     __fill_color    = c_black;
@@ -308,7 +313,7 @@ function CanvasManager(__check_object = true) { static __instance = new (functio
         {
             __left += (__width - __min_width) div 2;
             __width = __min_width;
-            _mode = __CANVAS_MODE_FIT_SMOOTH;
+            _mode = CANVAS_MODE_SMOOTH;
             _scale = true;
         }
 
@@ -318,24 +323,24 @@ function CanvasManager(__check_object = true) { static __instance = new (functio
         {
             __top += (__height - __min_height) div 2;
             __height = __min_height;
-            _mode = __CANVAS_MODE_FIT_SMOOTH;
+            _mode = CANVAS_MODE_SMOOTH;
             _scale = true;
         }
 
         //Fill scale
-        if ((_mode == __CANVAS_MODE_FIT_SHARP) || (_mode == __CANVAS_MODE_FIT_SMOOTH))
+        if ((_mode == CANVAS_MODE_CRISP) || (_mode == CANVAS_MODE_SMOOTH))
         {
             if (_orientation_window_width/__width > _orientation_window_height/__height)
             {
                 if (_orientation_window_height/_integer_scale > __height)
                 {
-                    _mode = __CANVAS_MODE_FIT_SMOOTH;
+                    _mode = CANVAS_MODE_SMOOTH;
                     _scale = true;
                 }
             }
             else if (_orientation_window_width/_integer_scale > __width)
             {
-                _mode = __CANVAS_MODE_FIT_SMOOTH;
+                _mode = CANVAS_MODE_SMOOTH;
                 _scale = true;
             }
         }
@@ -449,7 +454,7 @@ function CanvasManager(__check_object = true) { static __instance = new (functio
         if (_minScale >= 1.0)
         {
             //Upscale
-            if (__mode == __CANVAS_MODE_FIT_SMOOTH)
+            if (__mode == CANVAS_MODE_SMOOTH)
             {
                 __sampling_type = __CANVAS_SAMPLING_BILINEAR;
             }
@@ -473,7 +478,7 @@ function CanvasManager(__check_object = true) { static __instance = new (functio
         else
         {
             //Downscale
-            if (__mode == __CANVAS_MODE_FIT_SMOOTH)
+            if (__mode == CANVAS_MODE_SMOOTH)
             {    
                 __sampling_type = __CANVAS_SAMPLING_BICUBIC;
             }
