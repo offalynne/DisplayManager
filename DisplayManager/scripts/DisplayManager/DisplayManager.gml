@@ -2,12 +2,6 @@
 
 // Config (edit these!)
 #macro DISPLAY_AA_LEVEL 0  //AA level used when resetting display on Windows
-
-#region Private constants
-
-// Config (edit these!)
-#macro DISPLAY_AA_LEVEL 0  //AA level used when resetting display on Windows
-
 #region Private constants
 
 #macro __DISPLAY_SILENT  false
