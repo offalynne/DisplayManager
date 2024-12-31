@@ -1,18 +1,24 @@
 // feather ignore all
-#macro DISPLAY_MODE_PIXEL_PERFECT  "pixel"
-#macro DISPLAY_MODE_FIT_SHARP      "sharp"
-#macro DISPLAY_MODE_FIT_SMOOTH     "smooth"
+
+#macro __CANVAS_SAMPLING_SHIMMERLESS  "shimmerless"
+#macro __CANVAS_SAMPLING_BILINEAR     "bilinear"
+#macro __CANVAS_SAMPLING_BICUBIC      "bicubic"
+#macro __CANVAS_SAMPLING_SHARP        "sharp"
+#macro __CANVAS_SAMPLING_POINT        "point"
+
+#macro __CANVAS_MODE_PIXEL_PERFECT    "pixel"
+#macro __CANVAS_MODE_FIT_SHARP        "sharp"
+#macro __CANVAS_MODE_FIT_SMOOTH       "smooth"
 
 // Config (edit these!)
-#macro DISPLAY_APP_SURFACE_SIZE  2048      //Application size max
-#macro DISPLAY_INITIAL_WIDTH     320       //Initial window width
-#macro DISPLAY_INITIAL_HEIGHT    240       //Initial window height
+#macro CANVAS_APP_SURFACE_SIZE  2048  //Application size max
+#macro CANVAS_INITIAL_WIDTH     320   //Initial window width
+#macro CANVAS_INITIAL_HEIGHT    240   //Initial window height
 
-#macro DISPLAY_SCALE_MODE_INITIAL   DISPLAY_MODE_PIXEL_PERFECT
+#macro CANVAS_SCALE_MODE_INITIAL  __CANVAS_MODE_PIXEL_PERFECT
 
-#macro DISPLAY_SMOOTHING_THRESHOLD_MIN  -infinity
-#macro DISPLAY_SMOOTHING_THRESHOLD_MAX   infinity
-
+#macro CANVAS_SMOOTHING_THRESHOLD_MIN  -infinity
+#macro CANVAS_SMOOTHING_THRESHOLD_MAX   infinity
 
 #region Singleton
 
@@ -22,16 +28,16 @@ function CanvasManager(__check_object = true) { static __instance = new (functio
     
     __global = DisplayManager();
 
-    __mode          = DISPLAY_MODE_PIXEL_PERFECT;  
-    __sampling_type = __DISPLAY_SAMPLING_POINT;
+    __mode          = __CANVAS_MODE_PIXEL_PERFECT;  
+    __sampling_type = __CANVAS_SAMPLING_POINT;
     __orientation   = display_landscape;
     __fill_color    = c_black;
     
-    __min_width  = DISPLAY_INITIAL_WIDTH;
-    __min_height = DISPLAY_INITIAL_HEIGHT;
+    __min_width  = CANVAS_INITIAL_WIDTH;
+    __min_height = CANVAS_INITIAL_HEIGHT;
     
-    __max_width  = DISPLAY_INITIAL_WIDTH;
-    __max_height = DISPLAY_INITIAL_HEIGHT;
+    __max_width  = CANVAS_INITIAL_WIDTH;
+    __max_height = CANVAS_INITIAL_HEIGHT;
     
     __width  = __max_width;
     __height = __max_height; 
@@ -185,11 +191,11 @@ function CanvasManager(__check_object = true) { static __instance = new (functio
         if (!__configured)
         {
             //Validate canvas macros
-            if (!is_numeric(DISPLAY_APP_SURFACE_SIZE))        __global.__throw("Macro DISPLAY_APP_SURFACE_SIZE is invalid: \"",        DISPLAY_APP_SURFACE_SIZE,        "\". Number expected");
-            if (!is_numeric(DISPLAY_INITIAL_WIDTH))           __global.__throw("Macro DISPLAY_INITIAL_WIDTH is invalid: \"",           DISPLAY_INITIAL_WIDTH,           "\". Number expected");
-            if (!is_numeric(DISPLAY_INITIAL_HEIGHT))          __global.__throw("Macro DISPLAY_INITIAL_HEIGHT is invalid: \"",          DISPLAY_INITIAL_HEIGHT,          "\". Number expected");
-            if (!is_numeric(DISPLAY_SMOOTHING_THRESHOLD_MIN)) __global.__throw("Macro DISPLAY_SMOOTHING_THRESHOLD_MIN is invalid: \"", DISPLAY_SMOOTHING_THRESHOLD_MIN, "\". Number expected");
-            if (!is_numeric(DISPLAY_SMOOTHING_THRESHOLD_MAX)) __global.__throw("Macro DISPLAY_SMOOTHING_THRESHOLD_MAX is invalid: \"", DISPLAY_SMOOTHING_THRESHOLD_MAX, "\". Number expected");
+            if (!is_numeric(CANVAS_APP_SURFACE_SIZE))        __global.__throw("Macro CANVAS_APP_SURFACE_SIZE is invalid: \"",        CANVAS_APP_SURFACE_SIZE,        "\". Number expected");
+            if (!is_numeric(CANVAS_INITIAL_WIDTH))           __global.__throw("Macro CANVAS_INITIAL_WIDTH is invalid: \"",           CANVAS_INITIAL_WIDTH,           "\". Number expected");
+            if (!is_numeric(CANVAS_INITIAL_HEIGHT))          __global.__throw("Macro CANVAS_INITIAL_HEIGHT is invalid: \"",          CANVAS_INITIAL_HEIGHT,          "\". Number expected");
+            if (!is_numeric(CANVAS_SMOOTHING_THRESHOLD_MIN)) __global.__throw("Macro CANVAS_SMOOTHING_THRESHOLD_MIN is invalid: \"", CANVAS_SMOOTHING_THRESHOLD_MIN, "\". Number expected");
+            if (!is_numeric(CANVAS_SMOOTHING_THRESHOLD_MAX)) __global.__throw("Macro CANVAS_SMOOTHING_THRESHOLD_MAX is invalid: \"", CANVAS_SMOOTHING_THRESHOLD_MAX, "\". Number expected");
             
             //Android texture limit
             var _info = os_get_info();
@@ -237,7 +243,7 @@ function CanvasManager(__check_object = true) { static __instance = new (functio
             if (ds_exists(_info, ds_type_map)) ds_map_destroy(_info);
     
             //Set up application surface
-            var _requested_size = power(2, ceil(log2(DISPLAY_APP_SURFACE_SIZE))/1);
+            var _requested_size = power(2, ceil(log2(CANVAS_APP_SURFACE_SIZE))/1);
             var _texture_size = min(_max_supported_texture_size, _requested_size);
             if (_requested_size > _texture_size) __global.__log("Warning! Configured texture size ", _requested_size, " above maximum available size of ", _texture_size);
             surface_resize(application_surface, _texture_size, _texture_size);
@@ -248,9 +254,9 @@ function CanvasManager(__check_object = true) { static __instance = new (functio
             room_set_width( room_next(room), _texture_size);
         
             //Resize window
-            if (__DISPLAY_DESKTOP)
+            if ((os_type == os_windows) || (os_type == os_macosx)  || (os_type == os_linux))
             {
-                window_set_size(DISPLAY_INITIAL_WIDTH, DISPLAY_INITIAL_HEIGHT);
+                window_set_size(CANVAS_INITIAL_WIDTH, CANVAS_INITIAL_HEIGHT);
                 if (os_type == os_macosx) window_center();
             }
             else
@@ -300,7 +306,7 @@ function CanvasManager(__check_object = true) { static __instance = new (functio
         {
             __left += (__width - __min_width) div 2;
             __width = __min_width;
-            _mode = DISPLAY_MODE_FIT_SMOOTH;
+            _mode = __CANVAS_MODE_FIT_SMOOTH;
             _scale = true;
         }
 
@@ -310,24 +316,24 @@ function CanvasManager(__check_object = true) { static __instance = new (functio
         {
             __top += (__height - __min_height) div 2;
             __height = __min_height;
-            _mode = DISPLAY_MODE_FIT_SMOOTH;
+            _mode = __CANVAS_MODE_FIT_SMOOTH;
             _scale = true;
         }
 
         //Fill scale
-        if ((_mode == DISPLAY_MODE_FIT_SHARP) || (_mode == DISPLAY_MODE_FIT_SMOOTH))
+        if ((_mode == __CANVAS_MODE_FIT_SHARP) || (_mode == __CANVAS_MODE_FIT_SMOOTH))
         {
             if (_orientation_window_width/__width > _orientation_window_height/__height)
             {
                 if (_orientation_window_height/_integer_scale > __height)
                 {
-                    _mode = DISPLAY_MODE_FIT_SMOOTH;
+                    _mode = __CANVAS_MODE_FIT_SMOOTH;
                     _scale = true;
                 }
             }
             else if (_orientation_window_width/_integer_scale > __width)
             {
-                _mode = DISPLAY_MODE_FIT_SMOOTH;
+                _mode = __CANVAS_MODE_FIT_SMOOTH;
                 _scale = true;
             }
         }
@@ -433,7 +439,7 @@ function CanvasManager(__check_object = true) { static __instance = new (functio
         }
 
         //Set sampling mode
-        __sampling_type = __DISPLAY_SAMPLING_POINT;
+        __sampling_type = __CANVAS_SAMPLING_POINT;
         
         if ((__xscale == 1.0) && (__yscale == 1.0 )) exit;
 
@@ -441,37 +447,37 @@ function CanvasManager(__check_object = true) { static __instance = new (functio
         if (_minScale >= 1.0)
         {
             //Upscale
-            if (__mode == DISPLAY_MODE_FIT_SMOOTH)
+            if (__mode == __CANVAS_MODE_FIT_SMOOTH)
             {
-                __sampling_type = __DISPLAY_SAMPLING_BILINEAR;
+                __sampling_type = __CANVAS_SAMPLING_BILINEAR;
             }
             else if (frac(_minScale) != 0.0)
             {
-                if ((_minScale < DISPLAY_SMOOTHING_THRESHOLD_MIN) 
-                ||  (_minScale > DISPLAY_SMOOTHING_THRESHOLD_MAX))
+                if ((_minScale < CANVAS_SMOOTHING_THRESHOLD_MIN) 
+                ||  (_minScale > CANVAS_SMOOTHING_THRESHOLD_MAX))
                 {
-                    __sampling_type = __DISPLAY_SAMPLING_POINT;
+                    __sampling_type = __CANVAS_SAMPLING_POINT;
                 }
                 else if (_minScale < __DISPLAY_SHIMMERLESS_THRESHOLD)
                 {
-                    __sampling_type = __DISPLAY_SAMPLING_SHIMMERLESS;
+                    __sampling_type = __CANVAS_SAMPLING_SHIMMERLESS;
                 }
                 else
                 {
-                    __sampling_type = __DISPLAY_SAMPLING_SHARP;
+                    __sampling_type = __CANVAS_SAMPLING_SHARP;
                 }
             }
         }
         else
         {
             //Downscale
-            if (__mode == DISPLAY_MODE_FIT_SMOOTH)
+            if (__mode == __CANVAS_MODE_FIT_SMOOTH)
             {    
-                __sampling_type = __DISPLAY_SAMPLING_BICUBIC;
+                __sampling_type = __CANVAS_SAMPLING_BICUBIC;
             }
             else
             {                
-                __sampling_type = __DISPLAY_SAMPLING_BILINEAR;
+                __sampling_type = __CANVAS_SAMPLING_BILINEAR;
             }
         }
     }
@@ -497,10 +503,10 @@ function CanvasManager(__check_object = true) { static __instance = new (functio
 
         switch (__sampling_type)
         {
-            case __DISPLAY_SAMPLING_POINT:    gpu_set_texfilter(false); break;
-            case __DISPLAY_SAMPLING_BILINEAR: gpu_set_texfilter(true);  break;
+            case __CANVAS_SAMPLING_POINT:    gpu_set_texfilter(false); break;
+            case __CANVAS_SAMPLING_BILINEAR: gpu_set_texfilter(true);  break;
     
-            case __DISPLAY_SAMPLING_SHARP:
+            case __CANVAS_SAMPLING_SHARP:
                 _shader_set = true;
                 gpu_set_texfilter(true);
                 _texture = surface_get_texture(application_surface);
@@ -509,7 +515,7 @@ function CanvasManager(__check_object = true) { static __instance = new (functio
                 shader_set_uniform_f(shader_get_uniform(ShaderScaleSharpBilinear, "u_vScale"), __xscale, __yscale);
             break;
     
-            case __DISPLAY_SAMPLING_SHIMMERLESS:
+            case __CANVAS_SAMPLING_SHIMMERLESS:
                 _shader_set = true;
                 gpu_set_texfilter(true);
                 _texture = surface_get_texture(application_surface);
@@ -518,7 +524,7 @@ function CanvasManager(__check_object = true) { static __instance = new (functio
                 shader_set_uniform_f(shader_get_uniform(ShaderScaleSharpShimmerless, "u_vScale"), __xscale, __yscale);
             break;
 
-            case __DISPLAY_SAMPLING_BICUBIC:
+            case __CANVAS_SAMPLING_BICUBIC:
                 _shader_set = true;
                 gpu_set_texfilter(true);
                 _texture = surface_get_texture(application_surface);
