@@ -10,6 +10,8 @@
 #macro __CANVAS_MODE_FIT_SHARP        "sharp"
 #macro __CANVAS_MODE_FIT_SMOOTH       "smooth"
 
+#macro __CANVAS_SHIMMERLESS_THRESHOLD  2.0
+
 // Config (edit these!)
 #macro CANVAS_APP_SURFACE_SIZE  2048  //Application size max
 #macro CANVAS_INITIAL_WIDTH     320   //Initial window width
@@ -458,7 +460,7 @@ function CanvasManager(__check_object = true) { static __instance = new (functio
                 {
                     __sampling_type = __CANVAS_SAMPLING_POINT;
                 }
-                else if (_minScale < __DISPLAY_SHIMMERLESS_THRESHOLD)
+                else if (_minScale < __CANVAS_SHIMMERLESS_THRESHOLD)
                 {
                     __sampling_type = __CANVAS_SAMPLING_SHIMMERLESS;
                 }
