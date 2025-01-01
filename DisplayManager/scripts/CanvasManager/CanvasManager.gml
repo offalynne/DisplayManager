@@ -14,9 +14,9 @@
 
 
 //Public constants
-#macro CANVAS_MODE_SHARP   "sharp"  //Integer scale: Pixel perfect, crop to fit
-#macro CANVAS_MODE_CRISP   "crisp"  //Bilinear or box filter: Crisp scaling, letter or pillarbox to fit
-#macro CANVAS_MODE_SMOOTH  "smooth" //Bilinear or bicubic filter: Smooth scaling, letter or pillarbox to fit
+#macro CANVAS_MODE_SHARP   "sharp"   //Pixel perfect:  Integer scale
+#macro CANVAS_MODE_CRISP   "crisp"   //Crisp scaling:  Bilinear or box filter
+#macro CANVAS_MODE_SMOOTH  "smooth"  //Smooth scaling: Bilnear or bicubic filter
 
 //Private constants
 #macro __CANVAS_SAMPLING_SHIMMERLESS  "shimmerless"
