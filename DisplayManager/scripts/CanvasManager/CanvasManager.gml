@@ -8,7 +8,7 @@
 #macro CANVAS_SMOOTHING_THRESHOLD_MIN  -infinity //Minimum scale threshold for smoothing
 #macro CANVAS_SMOOTHING_THRESHOLD_MAX   infinity //Maximum scale threshold for smoothing
 
-#macro CANVAS_SCALE_MODE_INITIAL  CANVAS_MODE_SHARP //Initial canvas mode
+#macro CANVAS_SCALE_MODE_INITIAL  CANVAS_MODE_CRISP //Initial canvas mode
 
 
 
@@ -35,7 +35,7 @@ function CanvasManager(__check_object = true) { static __instance = new (functio
     
     __global = DisplayManager();
 
-    __mode          = CANVAS_MODE_SHARP;  
+    __mode          = CANVAS_SCALE_MODE_INITIAL;
     __sampling_type = __CANVAS_SAMPLING_POINT;
     __orientation   = display_landscape;
     __fill_color    = c_black;
