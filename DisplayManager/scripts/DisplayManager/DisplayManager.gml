@@ -82,6 +82,7 @@ function DisplayManager() { static __instance = new (function() constructor
     __using_input_library = false;
     __using_showborder    = false;
     __using_borderless    = false;
+    __using_canvas        = false;
     
     if (os_type == os_windows)
     {
@@ -92,7 +93,10 @@ function DisplayManager() { static __instance = new (function() constructor
         catch (_error) { __using_showborder = false; }
         
         try { __using_borderless = !is_undefined(window_get_borderless_fullscreen()); }
-        catch (_error) { __using_borderless = false; }        
+        catch (_error) { __using_borderless = false; }       
+        
+        try { __using_borderless = is_string(object_get_name(ObjectDisplayManagerCanvas)); }
+        catch (_error) { __using_canvas = false; }
     }
     
     #endregion    
@@ -418,7 +422,10 @@ function DisplayManager() { static __instance = new (function() constructor
             }
         }
         
-        with (ObjectDisplayManagerCanvas) CanvasManager().__tick();
+        if (__using_canvas)
+        {
+            with (ObjectDisplayManagerCanvas) CanvasManager().__tick();
+        }
         
         if (!__minimized)
         {
