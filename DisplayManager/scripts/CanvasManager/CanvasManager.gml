@@ -8,24 +8,20 @@
 #macro CANVAS_SMOOTHING_THRESHOLD_MIN  -infinity //Minimum scale threshold for smoothing
 #macro CANVAS_SMOOTHING_THRESHOLD_MAX   infinity //Maximum scale threshold for smoothing
 
-#macro CANVAS_SCALE_MODE_INITIAL  CANVAS_MODE_CRISP //Initial canvas mode
-
-
-
+#macro CANVAS_SCALE_MODE_INITIAL  CANVAS_MODE.CRISP //Initial canvas mode
 
 //Public constants
-#macro CANVAS_MODE_SHARP   "sharp"   //Pixel perfect:  Integer scale
-#macro CANVAS_MODE_CRISP   "crisp"   //Crisp scaling:  Bilinear or box filter
-#macro CANVAS_MODE_SMOOTH  "smooth"  //Smooth scaling: Bilnear or bicubic filter
+enum CANVAS_MODE
+{
+    SHARP,   //Pixel perfect:  Integer scale
+    CRISP,   //Crisp scaling:  Bilinear or box filter
+    SMOOTH   //Smooth scaling: Bilnear or bicubic filter
+}
 
 //Private constants
-#macro __CANVAS_SAMPLING_SHIMMERLESS  "shimmerless"
-#macro __CANVAS_SAMPLING_BILINEAR     "bilinear"
-#macro __CANVAS_SAMPLING_BICUBIC      "bicubic"
-#macro __CANVAS_SAMPLING_SHARP        "sharp"
-#macro __CANVAS_SAMPLING_POINT        "point"
-
 #macro __CANVAS_SHIMMERLESS_THRESHOLD  2.0
+
+enum __CANVAS_SAMPLING { POINT, SHARP, BICUBIC, BILINEAR, SHIMMERLESS }
 
 #region Singleton
 
@@ -36,7 +32,7 @@ function CanvasManager(__check_object = true) { static __instance = new (functio
     __global = DisplayManager();
 
     __mode          = CANVAS_SCALE_MODE_INITIAL;
-    __sampling_type = __CANVAS_SAMPLING_POINT;
+    __sampling_type = __CANVAS_SAMPLING.POINT;
     __orientation   = display_landscape;
     __fill_color    = c_black;
     
@@ -73,6 +69,18 @@ function CanvasManager(__check_object = true) { static __instance = new (functio
     __max_height_change  = __max_height;
     
     __point = { x:0, y:0 };
+
+    __sampling_name_list = [];
+    __sampling_name_list [__CANVAS_SAMPLING.POINT      ] = "point";
+    __sampling_name_list [__CANVAS_SAMPLING.SHARP      ] = "sharp";
+    __sampling_name_list [__CANVAS_SAMPLING.BICUBIC    ] = "bicubic";
+    __sampling_name_list [__CANVAS_SAMPLING.BILINEAR   ] = "bilinear";
+    __sampling_name_list [__CANVAS_SAMPLING.SHIMMERLESS] = "shimmerless";
+
+    __canvas_mode_name_list = [];
+    __canvas_mode_name_list[CANVAS_MODE.SHARP ] = "sharp";
+    __canvas_mode_name_list[CANVAS_MODE.CRISP ] = "crisp";
+    __canvas_mode_name_list[CANVAS_MODE.SMOOTH] = "smooth";
     
     #endregion
     
@@ -157,9 +165,9 @@ function CanvasManager(__check_object = true) { static __instance = new (functio
         }
         
         var _readout = " Angle     " + _orientation + "\n" +
-                       " Mode      " + string(__mode) + "\n" +
+                       " Mode      " + string(__canvas_mode_name_list[__mode]) + "\n" +
                        " Scale     " + string(__xscale*100) + "%" + "\n" +
-                       " Sampling  " + string(__sampling_type) + "\n" +
+                       " Sampling  " + string(__sampling_name_list[__sampling_type]) + "\n" +
                        " Monitor   " + string(DisplayManager().__monitor_active + 1) + "/" + string(array_length(DisplayManager().__monitor_list));
 
         if ((__global.__window_width > string_width(_readout)) && (__global.__window_height > string_height(_readout)))
@@ -313,7 +321,7 @@ function CanvasManager(__check_object = true) { static __instance = new (functio
         {
             __left += (__width - __min_width) div 2;
             __width = __min_width;
-            _mode = CANVAS_MODE_SMOOTH;
+            _mode = CANVAS_MODE.SMOOTH;
             _scale = true;
         }
 
@@ -323,24 +331,24 @@ function CanvasManager(__check_object = true) { static __instance = new (functio
         {
             __top += (__height - __min_height) div 2;
             __height = __min_height;
-            _mode = CANVAS_MODE_SMOOTH;
+            _mode = CANVAS_MODE.SMOOTH;
             _scale = true;
         }
 
         //Fill scale
-        if ((_mode == CANVAS_MODE_CRISP) || (_mode == CANVAS_MODE_SMOOTH))
+        if ((_mode == CANVAS_MODE.CRISP) || (_mode == CANVAS_MODE.SMOOTH))
         {
             if (_orientation_window_width/__width > _orientation_window_height/__height)
             {
                 if (_orientation_window_height/_integer_scale > __height)
                 {
-                    _mode = CANVAS_MODE_SMOOTH;
+                    _mode = CANVAS_MODE.SMOOTH;
                     _scale = true;
                 }
             }
             else if (_orientation_window_width/_integer_scale > __width)
             {
-                _mode = CANVAS_MODE_SMOOTH;
+                _mode = CANVAS_MODE.SMOOTH;
                 _scale = true;
             }
         }
@@ -446,7 +454,7 @@ function CanvasManager(__check_object = true) { static __instance = new (functio
         }
 
         //Set sampling mode
-        __sampling_type = __CANVAS_SAMPLING_POINT;
+        __sampling_type = __CANVAS_SAMPLING.POINT;
         
         if ((__xscale == 1.0) && (__yscale == 1.0 )) exit;
 
@@ -454,37 +462,37 @@ function CanvasManager(__check_object = true) { static __instance = new (functio
         if (_minScale >= 1.0)
         {
             //Upscale
-            if (__mode == CANVAS_MODE_SMOOTH)
+            if (__mode == CANVAS_MODE.SMOOTH)
             {
-                __sampling_type = __CANVAS_SAMPLING_BILINEAR;
+                __sampling_type = __CANVAS_SAMPLING.BILINEAR;
             }
             else if (frac(_minScale) != 0.0)
             {
                 if ((_minScale < CANVAS_SMOOTHING_THRESHOLD_MIN) 
                 ||  (_minScale > CANVAS_SMOOTHING_THRESHOLD_MAX))
                 {
-                    __sampling_type = __CANVAS_SAMPLING_POINT;
+                    __sampling_type = __CANVAS_SAMPLING.POINT;
                 }
                 else if (_minScale < __CANVAS_SHIMMERLESS_THRESHOLD)
                 {
-                    __sampling_type = __CANVAS_SAMPLING_SHIMMERLESS;
+                    __sampling_type = __CANVAS_SAMPLING.SHIMMERLESS;
                 }
                 else
                 {
-                    __sampling_type = __CANVAS_SAMPLING_SHARP;
+                    __sampling_type = __CANVAS_SAMPLING.SHARP;
                 }
             }
         }
         else
         {
             //Downscale
-            if (__mode == CANVAS_MODE_SMOOTH)
+            if (__mode == CANVAS_MODE.SMOOTH)
             {    
-                __sampling_type = __CANVAS_SAMPLING_BICUBIC;
+                __sampling_type = __CANVAS_SAMPLING.BICUBIC;
             }
             else
             {                
-                __sampling_type = __CANVAS_SAMPLING_BILINEAR;
+                __sampling_type = __CANVAS_SAMPLING.BILINEAR;
             }
         }
     }
@@ -510,10 +518,10 @@ function CanvasManager(__check_object = true) { static __instance = new (functio
 
         switch (__sampling_type)
         {
-            case __CANVAS_SAMPLING_POINT:    gpu_set_texfilter(false); break;
-            case __CANVAS_SAMPLING_BILINEAR: gpu_set_texfilter(true);  break;
+            case __CANVAS_SAMPLING.POINT:    gpu_set_texfilter(false); break;
+            case __CANVAS_SAMPLING.BILINEAR: gpu_set_texfilter(true);  break;
     
-            case __CANVAS_SAMPLING_SHARP:
+            case __CANVAS_SAMPLING.SHARP:
                 _shader_set = true;
                 gpu_set_texfilter(true);
                 _texture = surface_get_texture(application_surface);
@@ -522,7 +530,7 @@ function CanvasManager(__check_object = true) { static __instance = new (functio
                 shader_set_uniform_f(shader_get_uniform(ShaderScaleSharpBilinear, "u_vScale"), __xscale, __yscale);
             break;
     
-            case __CANVAS_SAMPLING_SHIMMERLESS:
+            case __CANVAS_SAMPLING.SHIMMERLESS:
                 _shader_set = true;
                 gpu_set_texfilter(true);
                 _texture = surface_get_texture(application_surface);
@@ -531,7 +539,7 @@ function CanvasManager(__check_object = true) { static __instance = new (functio
                 shader_set_uniform_f(shader_get_uniform(ShaderScaleSharpShimmerless, "u_vScale"), __xscale, __yscale);
             break;
 
-            case __CANVAS_SAMPLING_BICUBIC:
+            case __CANVAS_SAMPLING.BICUBIC:
                 _shader_set = true;
                 gpu_set_texfilter(true);
                 _texture = surface_get_texture(application_surface);

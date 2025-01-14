@@ -16,7 +16,7 @@ if (instance_exists(ObjectDisplayManagerCanvas))
     if (keyboard_check_pressed(vk_tab)) display_canvas_overlay_set(!display_canvas_overlay());
     
     //Cycle scale modes
-    var _mode_list = [CANVAS_MODE_SHARP, CANVAS_MODE_CRISP, CANVAS_MODE_SMOOTH];
+    var _mode_list = [CANVAS_MODE.SHARP, CANVAS_MODE.CRISP, CANVAS_MODE.SMOOTH];
     var _mode_index = 0;
     repeat(array_length(_mode_list))
     {

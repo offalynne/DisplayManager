@@ -95,7 +95,7 @@ function DisplayManager() { static __instance = new (function() constructor
         try { __using_borderless = !is_undefined(window_get_borderless_fullscreen()); }
         catch (_error) { __using_borderless = false; }       
         
-        try { __using_borderless = is_string(object_get_name(ObjectDisplayManagerCanvas)); }
+        try { __using_canvas = is_string(object_get_name(ObjectDisplayManagerCanvas)); }
         catch (_error) { __using_canvas = false; }
     }
     
@@ -141,7 +141,7 @@ function DisplayManager() { static __instance = new (function() constructor
         //Invalid monitor
         if (__fullscreen || (_monitor == __monitor_active) || (_monitor < 0) || (_monitor >= array_length(__monitor_list))) return false;
                 
-        //Scall to fit smaller window
+        //Scale to fit smaller window
         if ((__window_width  > __monitor_list[_monitor].image_xscale) 
         ||  (__window_height > __monitor_list[_monitor].image_yscale - __titlebar_height))
         {
@@ -354,7 +354,7 @@ function DisplayManager() { static __instance = new (function() constructor
         else
         {
             //Find titlebar state
-            __titlebar_height = __os_titlebar_height
+            __titlebar_height = __os_titlebar_height;
             if (__using_showborder) if (!window_get_showborder()) __titlebar_height = 0;
             
             //Get window state
@@ -382,7 +382,7 @@ function DisplayManager() { static __instance = new (function() constructor
                 }
                 
                 //Match GUI scale to window
-                display_set_gui_size(__window_width, __window_height);
+                if (__using_canvas) display_set_gui_size(__window_width, __window_height);
                 
                 //Prevent display gore on window resize
                 if (os_type == os_windows) display_reset(min(DISPLAY_AA_LEVEL, display_aa), true);
