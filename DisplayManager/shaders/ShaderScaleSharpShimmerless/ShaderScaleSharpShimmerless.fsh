@@ -1,5 +1,5 @@
 //Sharp Shimmerless scale adapted by Alynne Keith
-//Based on  Sharp Shimmerless by Woohyun Kang   2023-01-24
+//Based on Sharp Shimmerless by Woohyun Kang    2023-01-24
 //https://github.com/Woohyun-Kang/Sharp-Shimmerless-Shader
 
 varying vec2 v_vTexcoord;
