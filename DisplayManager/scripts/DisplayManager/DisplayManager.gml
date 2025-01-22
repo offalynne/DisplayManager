@@ -141,7 +141,7 @@ function DisplayManager() { static __instance = new (function() constructor
         //Invalid monitor
         if (__fullscreen || (_monitor == __monitor_active) || (_monitor < 0) || (_monitor >= array_length(__monitor_list))) return false;
                 
-        //Scall to fit smaller window
+        //Scale to fit smaller window
         if ((__window_width  > __monitor_list[_monitor].image_xscale) 
         ||  (__window_height > __monitor_list[_monitor].image_yscale - __titlebar_height))
         {
