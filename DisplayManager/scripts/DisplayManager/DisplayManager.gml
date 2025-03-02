@@ -95,7 +95,7 @@ function DisplayManager() { static __instance = new (function() constructor
         try { __using_borderless = !is_undefined(window_get_borderless_fullscreen()); }
         catch (_error) { __using_borderless = false; }       
         
-        try { __using_borderless = is_string(object_get_name(ObjectDisplayManagerCanvas)); }
+        try { __using_canvas = is_string(object_get_name(ObjectDisplayManagerCanvas)); }
         catch (_error) { __using_canvas = false; }
     }
     
