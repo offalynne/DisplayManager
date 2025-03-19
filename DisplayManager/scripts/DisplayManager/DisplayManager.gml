@@ -382,7 +382,7 @@ function DisplayManager() { static __instance = new (function() constructor
                 }
                 
                 //Match GUI scale to window
-                display_set_gui_size(__window_width, __window_height);
+                if (__using_canvas) display_set_gui_size(__window_width, __window_height);
                 
                 //Prevent display gore on window resize
                 if (os_type == os_windows) display_reset(min(DISPLAY_AA_LEVEL, display_aa), true);
