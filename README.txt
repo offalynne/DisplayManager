@@ -23,11 +23,11 @@ display_canvas_orientation_set(orientation, [resize])
 
 display_canvas_mode()
  Get Canvas mode
- Returns DISPLAY_MODE_PIXEL_PERFECT, DISPLAY_MODE_FIT_SHARP, or DISPLAY_MODE_FIT_SMOOTH
+ Returns CANVAS_MODE.SHARP, CANVAS_MODE.CRISP, or CANVAS_MODE.SMOOTH
 
 display_canvas_mode_set(mode)
  Set Canvas mode
- Use DISPLAY_MODE_PIXEL_PERFECT, DISPLAY_MODE_FIT_SHARP, or DISPLAY_MODE_FIT_SMOOTH
+ Use CANVAS_MODE.SHARP, CANVAS_MODE.CRISP, or CANVAS_MODE.SMOOTH
 
 display_canvas_overlay()
  Get Canvas overlay state
