@@ -13,6 +13,26 @@ Quick Start
 1. Set RoomDisplayManagerInit as first room for Canvas
 2. Change CanvasManager macro values for initial state 
 
+display_monitor_set(monitorIndex)
+  Set active monitor
+  Use numeric values
+
+display_monitor_set_allowed(monitorIndex)
+  Get monitor change permission
+  Returns boolean
+
+display_monitor_active()
+  Get active monitor
+  Returns numeric value
+
+display_monitor_list()
+  Get list of monitors
+  Returns array of structs with x, y, image_xscale, image_yscale
+
+display_time_source()
+  Get time source handle
+  Returns Display time source
+
 display_canvas_orientation()
  Get Canvas orientation
  Returns display_landscape, display_landscape_flipped, display_portrait, or display_portrait_flipped
