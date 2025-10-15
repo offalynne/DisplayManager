@@ -168,7 +168,7 @@ function CanvasManager(__check_object = true) { static __instance = new (functio
                        " Mode      " + string(__canvas_mode_name_list[__mode]) + "\n" +
                        " Scale     " + string(__xscale*100) + "%" + "\n" +
                        " Sampling  " + string(__sampling_name_list[__sampling_type]) + "\n" +
-                       " Monitor   " + string(DisplayManager().__monitor_active + 1) + "/" + string(array_length(DisplayManager().__monitor_list));
+                       " Monitor   " + string(__global.__monitor_active + 1) + "/" + string(array_length(__global.__monitor_list));
 
         if ((__global.__window_width > string_width(_readout)) && (__global.__window_height > string_height(_readout)))
         {        
