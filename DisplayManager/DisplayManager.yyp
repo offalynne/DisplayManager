@@ -3,7 +3,6 @@
   "resourceVersion": "1.6",
   "name": "DisplayManager",
   "resources": [
-    {"id":{"name":"ShaderScaleSharpShimmerless","path":"shaders/ShaderScaleSharpShimmerless/ShaderScaleSharpShimmerless.yy",},"order":8,},
     {"id":{"name":"ShaderScaleBicubic","path":"shaders/ShaderScaleBicubic/ShaderScaleBicubic.yy",},"order":1,},
     {"id":{"name":"ObjectTestDisplayManagerCanvas","path":"objects/ObjectTestDisplayManagerCanvas/ObjectTestDisplayManagerCanvas.yy",},"order":4,},
     {"id":{"name":"ObjectDisplayManagerCanvas","path":"objects/ObjectDisplayManagerCanvas/ObjectDisplayManagerCanvas.yy",},"order":4,},
