@@ -15,7 +15,7 @@ enum CANVAS_MODE
 {
     SHARP,   //Pixel perfect:  Integer scale
     CRISP,   //Crisp scaling:  Bilinear or box filter
-    SMOOTH   //Smooth scaling: Bilnear or bicubic filter
+    SMOOTH   //Smooth scaling: Bilinear or bicubic filter
 }
 
 //Private constants
@@ -246,7 +246,7 @@ function CanvasManager(__check_object = true) { static __instance = new (functio
                             _scale++;
                             try { surface_resize(application_surface, power(2, _scale), power(2, _scale)); }
                             catch (_error) { break; }
-                            if (_scale > 14) __global.__throw("Texture scale exceeds ", power(2, _scale - 1));
+                            if (_scale > 14) _error = {};
                         }
                         _max_supported_texture_size = power(2, _scale - 1);
                     break;
