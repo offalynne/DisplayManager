@@ -19,8 +19,9 @@ enum CANVAS_MODE
 }
 
 //Private constants
+#macro __CANVAS_SHIMMERLESS_THRESHOLD  2.0
 
-enum __CANVAS_SAMPLING { POINT, SHARP, BICUBIC, BILINEAR }
+enum __CANVAS_SAMPLING { POINT, SHARP, BICUBIC, BILINEAR, SHIMMERLESS }
 
 #region Singleton
 
@@ -74,6 +75,7 @@ function CanvasManager(__check_object = true) { static __instance = new (functio
     __sampling_name_list [__CANVAS_SAMPLING.SHARP      ] = "sharp";
     __sampling_name_list [__CANVAS_SAMPLING.BICUBIC    ] = "bicubic";
     __sampling_name_list [__CANVAS_SAMPLING.BILINEAR   ] = "bilinear";
+    __sampling_name_list [__CANVAS_SAMPLING.SHIMMERLESS] = "shimmerless";
 
     __canvas_mode_name_list = [];
     __canvas_mode_name_list[CANVAS_MODE.SHARP ] = "sharp";
@@ -471,9 +473,9 @@ function CanvasManager(__check_object = true) { static __instance = new (functio
                 {
                     __sampling_type = __CANVAS_SAMPLING.POINT;
                 }
-                else if (_minScale < 2.0)
+                else if (_minScale < __CANVAS_SHIMMERLESS_THRESHOLD)
                 {
-                    __sampling_type = __CANVAS_SAMPLING.BILINEAR;                    
+                    __sampling_type = __CANVAS_SAMPLING.SHIMMERLESS;
                 }
                 else
                 {
@@ -526,6 +528,15 @@ function CanvasManager(__check_object = true) { static __instance = new (functio
                 shader_set(ShaderScaleSharpBilinear);
                 shader_set_uniform_f(shader_get_uniform(ShaderScaleSharpBilinear, "u_vTexelSize"), texture_get_texel_width(_texture), texture_get_texel_height(_texture));
                 shader_set_uniform_f(shader_get_uniform(ShaderScaleSharpBilinear, "u_vScale"), __xscale, __yscale);
+            break;
+    
+            case __CANVAS_SAMPLING.SHIMMERLESS:
+                _shader_set = true;
+                gpu_set_texfilter(true);
+                _texture = surface_get_texture(application_surface);
+                shader_set(ShaderScaleSharpShimmerless);
+                shader_set_uniform_f(shader_get_uniform(ShaderScaleSharpShimmerless, "u_vTexelSize"), texture_get_texel_width(_texture), texture_get_texel_height(_texture));
+                shader_set_uniform_f(shader_get_uniform(ShaderScaleSharpShimmerless, "u_vScale"), __xscale, __yscale);
             break;
 
             case __CANVAS_SAMPLING.BICUBIC:
