@@ -77,16 +77,12 @@ function DisplayManager() { static __instance = new (function() constructor
     
     #region Feature Detection
         
-    __using_input_library = false;
-    __using_showborder    = false;
-    __using_borderless    = false;
-    __using_canvas        = false;
+    __using_showborder  = false;
+    __using_borderless  = false;
+    __using_canvas      = false;
     
     if (os_type == os_windows)
-    {
-        try { __using_input_library = !is_undefined(__INPUT_VERSION); }
-        catch (_error) { __using_input_library = false; }
-        
+    {   
         try { __using_showborder = !is_undefined(window_get_showborder()); }
         catch (_error) { __using_showborder = false; }
         
@@ -166,7 +162,6 @@ function DisplayManager() { static __instance = new (function() constructor
     __block_input = function()
     {
         //Capture input to prevent thrashing
-        if (DisplayManager().__using_input_library) input_clear(all);
         io_clear();
     }
     
