@@ -293,22 +293,25 @@ function DisplayManager() { static __instance = new (function() constructor
             var _overlap_x2   = 0;
             var _overlap_y2   = 0;
             var _overlap_area = 0;
-            var _overlap_max  = 0;    
+            var _overlap_max  = 0;
+            var _index = 0;
             
             var _monitor_index = 0;
             repeat (__monitor_count)
             {
+                _index = _monitor_index*__DISPLAY_RECT.__LENGTH;
+
                 //Find display change
-                _x1 = __rects[_monitor_index*__DISPLAY_RECT.__LENGTH + __DISPLAY_RECT.__MONITOR_X1];
-                _y1 = __rects[_monitor_index*__DISPLAY_RECT.__LENGTH + __DISPLAY_RECT.__MONITOR_Y1];
-                _x2 = __handle_underflow(__rects[_monitor_index*__DISPLAY_RECT.__LENGTH + __DISPLAY_RECT.__MONITOR_X2]);
-                _y2 = __handle_underflow(__rects[_monitor_index*__DISPLAY_RECT.__LENGTH + __DISPLAY_RECT.__MONITOR_Y2]);                
+                _x1 = __rects[_index + __DISPLAY_RECT.__MONITOR_X1];
+                _y1 = __rects[_index + __DISPLAY_RECT.__MONITOR_Y1];
+                _x2 = __handle_underflow(__rects[_index + __DISPLAY_RECT.__MONITOR_X2]);
+                _y2 = __handle_underflow(__rects[_index + __DISPLAY_RECT.__MONITOR_Y2]);                
                 if (!_display_change)
                 {
-                    if ((_x1 != _rects_last[_monitor_index*__DISPLAY_RECT.__LENGTH + __DISPLAY_RECT.__MONITOR_X1])
-                    ||  (_y1 != _rects_last[_monitor_index*__DISPLAY_RECT.__LENGTH + __DISPLAY_RECT.__MONITOR_Y1])
-                    ||  (_x2 != _rects_last[_monitor_index*__DISPLAY_RECT.__LENGTH + __DISPLAY_RECT.__MONITOR_X2])
-                    ||  (_y2 != _rects_last[_monitor_index*__DISPLAY_RECT.__LENGTH + __DISPLAY_RECT.__MONITOR_Y2]))
+                    if ((_x1 != _rects_last[_index + __DISPLAY_RECT.__MONITOR_X1])
+                    ||  (_y1 != _rects_last[_index + __DISPLAY_RECT.__MONITOR_Y1])
+                    ||  (_x2 != _rects_last[_index + __DISPLAY_RECT.__MONITOR_X2])
+                    ||  (_y2 != _rects_last[_index + __DISPLAY_RECT.__MONITOR_Y2]))
                     {
                         _display_change = true;
                     }
@@ -317,10 +320,10 @@ function DisplayManager() { static __instance = new (function() constructor
                 //Find monitor containing the window
                 if (!__minimized)
                 {
-                    _overlap_x1 = __rects[_monitor_index*__DISPLAY_RECT.__LENGTH + __DISPLAY_RECT.__OVERLAP_X1];
-                    _overlap_y1 = __rects[_monitor_index*__DISPLAY_RECT.__LENGTH + __DISPLAY_RECT.__OVERLAP_Y1];
-                    _overlap_x2 = __handle_underflow(__rects[_monitor_index*__DISPLAY_RECT.__LENGTH + __DISPLAY_RECT.__OVERLAP_X2]);
-                    _overlap_y2 = __handle_underflow(__rects[_monitor_index*__DISPLAY_RECT.__LENGTH + __DISPLAY_RECT.__OVERLAP_Y2]);
+                    _overlap_x1 = __rects[_index + __DISPLAY_RECT.__OVERLAP_X1];
+                    _overlap_y1 = __rects[_index + __DISPLAY_RECT.__OVERLAP_Y1];
+                    _overlap_x2 = __handle_underflow(__rects[_index + __DISPLAY_RECT.__OVERLAP_X2]);
+                    _overlap_y2 = __handle_underflow(__rects[_index + __DISPLAY_RECT.__OVERLAP_Y2]);
                     _overlap_area = (_overlap_x2 - _overlap_x1)*(_overlap_y2  - _overlap_y1);                
                     if ((_overlap_max < __window_width*__window_height) && (_overlap_area >= _overlap_max))
                     {
