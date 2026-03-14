@@ -71,11 +71,11 @@ function CanvasManager(__check_object = true) { static __instance = new (functio
     __point = { x:0, y:0 };
 
     __sampling_name_list = [];
-    __sampling_name_list [__CANVAS_SAMPLING.POINT      ] = "point";
-    __sampling_name_list [__CANVAS_SAMPLING.SHARP      ] = "sharp";
-    __sampling_name_list [__CANVAS_SAMPLING.BICUBIC    ] = "bicubic";
-    __sampling_name_list [__CANVAS_SAMPLING.BILINEAR   ] = "bilinear";
-    __sampling_name_list [__CANVAS_SAMPLING.SHIMMERLESS] = "shimmerless";
+    __sampling_name_list[__CANVAS_SAMPLING.POINT      ] = "point";
+    __sampling_name_list[__CANVAS_SAMPLING.SHARP      ] = "sharp";
+    __sampling_name_list[__CANVAS_SAMPLING.BICUBIC    ] = "bicubic";
+    __sampling_name_list[__CANVAS_SAMPLING.BILINEAR   ] = "bilinear";
+    __sampling_name_list[__CANVAS_SAMPLING.SHIMMERLESS] = "shimmerless";
 
     __canvas_mode_name_list = [];
     __canvas_mode_name_list[CANVAS_MODE.SHARP ] = "sharp";
@@ -321,18 +321,18 @@ function CanvasManager(__check_object = true) { static __instance = new (functio
         {
             __left += (__width - __min_width) div 2;
             __width = __min_width;
-            _mode = CANVAS_MODE.SMOOTH;
-            _scale = true;
+            _mode   = CANVAS_MODE.SMOOTH;
+            _scale  = true;
         }
 
         //Upscale height
         __top = 0;
         if (_orientation_window_height < __min_height)
         {
-            __top += (__height - __min_height) div 2;
+            __top   += (__height - __min_height) div 2;
             __height = __min_height;
-            _mode = CANVAS_MODE.SMOOTH;
-            _scale = true;
+            _mode    = CANVAS_MODE.SMOOTH;
+            _scale   = true;
         }
 
         //Fill scale
@@ -342,13 +342,13 @@ function CanvasManager(__check_object = true) { static __instance = new (functio
             {
                 if (_orientation_window_height/_integer_scale > __height)
                 {
-                    _mode = CANVAS_MODE.SMOOTH;
+                    _mode  = CANVAS_MODE.SMOOTH;
                     _scale = true;
                 }
             }
             else if (_orientation_window_width/_integer_scale > __width)
             {
-                _mode = CANVAS_MODE.SMOOTH;
+                _mode  = CANVAS_MODE.SMOOTH;
                 _scale = true;
             }
         }
