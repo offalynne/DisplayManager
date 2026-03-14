@@ -581,12 +581,12 @@ function display_canvas_scale() { return CanvasManager().__xscale; }
 function display_canvas_x() { return CanvasManager().__x; }
 function display_canvas_y() { return CanvasManager().__y; }
 
-function display_canvas_size_set(_min_width, _min_height, _max_width = undefined, _max_height = undefined)
+function display_canvas_size_set(_min_width, _min_height, _max_width = _min_width, _max_height = _min_height)
 {
     CanvasManager().__min_width_change  = _min_width;
     CanvasManager().__min_height_change = _min_height;
-    CanvasManager().__max_width_change  = _max_width  ?? _min_width;
-    CanvasManager().__max_height_change = _max_height ?? _min_height;
+    CanvasManager().__max_width_change  = _max_width;
+    CanvasManager().__max_height_change = _max_height;
 }
 
 #endregion
