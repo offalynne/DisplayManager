@@ -17,7 +17,7 @@ display_monitor_set(monitorIndex)
   Set active monitor
   Use numeric values
 
-display_monitor_set_allowed(monitorIndex)
+display_monitor_change_allowed(monitorIndex)
   Get monitor change permission
   Returns boolean
 
