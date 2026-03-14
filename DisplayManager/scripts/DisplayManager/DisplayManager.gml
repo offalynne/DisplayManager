@@ -522,7 +522,7 @@ function DisplayManager() { static __instance = new (function() constructor
 #region Public functions
 
 function display_monitor_set(_monitor) { DisplayManager().__monitor_set(_monitor); }
-function display_monitor_set_allowed(_monitor) { return is_undefined(DisplayManager().__monitor_set_error()); }
+function display_monitor_change_allowed(_monitor) { return is_undefined(DisplayManager().__monitor_set_error()); }
 function display_monitor_active() { return DisplayManager().__monitor_active; }
 function display_monitor_list() { return DisplayManager().__monitor_list; }
 function display_time_source() { return DisplayManager().__timesource_handle; }
